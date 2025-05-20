@@ -1,6 +1,4 @@
 import streamlit as st
-import zipfile
-import io
 
 def dividir_en_bloques(lineas, minimo=500, maximo=650):
     bloques = []
@@ -40,18 +38,13 @@ if uploaded_file is not None:
 
     bloques = dividir_en_bloques(lineas)
 
-    st.success(f"Se han creado {len(bloques)} bloques.")
+    st.success(f"Se han generado {len(bloques)} bloques (archivos).")
 
-    # Crear archivo ZIP en memoria
-    zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, "w") as zip_file:
-        for i, bloque in enumerate(bloques, start=1):
-            contenido_bloque = "\n".join(bloque)
-            zip_file.writestr(f"bloque_{i}.txt", contenido_bloque)
-    
-    st.download_button(
-        label="📥 Descargar bloques en ZIP",
-        data=zip_buffer.getvalue(),
-        file_name="bloques_divididos.zip",
-        mime="application/zip"
-    )
+    for i, bloque in enumerate(bloques, start=1):
+        contenido_txt = "\n".join(bloque)
+        st.download_button(
+            label=f"📄 Descargar bloque {i}",
+            data=contenido_txt,
+            file_name=f"bloque_{i}.txt",
+            mime="text/plain"
+        )
